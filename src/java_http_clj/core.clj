@@ -122,14 +122,12 @@
     :byte-array bh-of-byte-array))
 
 (defn resp->ring [^HttpResponse resp]
-  (-> (transient {})
-      (assoc! :status (.statusCode resp))
-      (assoc! :body (.body resp))
-      (assoc! :version (-> resp .version .name))
-      (assoc! :headers (into {}
-                          (map (fn [[k v]] [k (if (> (count v) 1) (vec v) (first v))]))
-                          (.map (.headers resp))))
-      persistent!))
+  {:status (.statusCode resp)
+   :body (.body resp)
+   :version (-> resp .version .name)
+   :headers (into {}
+                  (map (fn [[k v]] [k (if (> (count v) 1) (vec v) (first v))]))
+                  (.map (.headers resp)))})
 
 (defn clj-fn->function ^Function [f]
   (reify Function
