@@ -173,9 +173,9 @@
        ex-handler  (.exceptionally (clj-fn->function ex-handler))))))
 
 (defn- shorthand-docstring [method]
-  (str "Send a " (method-keyword->str method) " request to `uri`.
+  (str "Sends a " (method-keyword->str method) " request to `uri`.
 
-   See [[send]] for a description of the `req-map` and `opts` parameters."))
+   See [[send]] for a description of `req-map` and `opts`."))
 
 (defn- defshorthand [method]
   `(defn ~(symbol (name method))
@@ -200,7 +200,7 @@
   `(alter-meta! ~var #(assoc % :doc ~docstring)))
 
 (add-docstring #'default-client
-  "Used for request unless client is explicitly passed. Equivalent to `(build-client)`.")
+  "Used for request unless a client is explicitly passed. Equivalent to `(build-client)`.")
 
 (add-docstring #'client-builder
   "Same as [[build-client]], but returns a [HttpClient.Builder](https://docs.oracle.com/en/java/javase/11/docs/api/java.net.http/java/net/http/HttpClient.Builder.html) instead of a [HttpClient](https://docs.oracle.com/en/java/javase/11/docs/api/java.net.http/java/net/http/HttpClient.html).
@@ -209,7 +209,7 @@
 
 
 (add-docstring #'build-client
-  "Used to build a client. See [HttpClient.Builder](https://docs.oracle.com/en/java/javase/11/docs/api/java.net.http/java/net/http/HttpClient.Builder.html) for a more detailed description of the options.
+  "Builds a client with the supplied options. See [HttpClient.Builder](https://docs.oracle.com/en/java/javase/11/docs/api/java.net.http/java/net/http/HttpClient.Builder.html) for a more detailed description of the options.
 
   The `opts` map takes the following keys:
 
@@ -229,7 +229,7 @@
   "Same as [[build-request]], but returns a [HttpRequest.Builder](https://docs.oracle.com/en/java/javase/11/docs/api/java.net.http/java/net/http/HttpRequest.Builder.html) instead of a [HttpRequest](https://docs.oracle.com/en/java/javase/11/docs/api/java.net.http/java/net/http/HttpRequest.html).")
 
 (add-docstring #'build-request
-  "Constructs a [java.net.http.HttpRequest](https://docs.oracle.com/en/java/javase/11/docs/api/java.net.http/java/net/http/HttpRequest.html) from a map.
+  "Builds a [java.net.http.HttpRequest](https://docs.oracle.com/en/java/javase/11/docs/api/java.net.http/java/net/http/HttpRequest.html) from a map.
 
   See [[send]] for a description of `req-map`.
 
