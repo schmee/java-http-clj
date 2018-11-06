@@ -8,7 +8,7 @@ java-http-clj is alpha quality. Expect better testing and specs soon!
 
 ## Installation
 
-`[java-http-clj "0.1.0"]`
+`[java-http-clj "0.2.0"]`
 
 java-http-clj requires Java 11 or later.
 
