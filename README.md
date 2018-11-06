@@ -27,7 +27,9 @@ The most common HTTP methods (GET, POST, PUT, HEAD, DELETE) have a function of t
 (http/get "http://www.google.com")
 
 ;; With request options
-(http/get "http://www.google.com" {:headers {"Accept" "application/json" "Accept-Encoding ["gzip" "deflate"]} :timeout 2000})
+(http/get "http://www.google.com" {:headers {"Accept" "application/json"
+                                             "Accept-Encoding ["gzip" "deflate"]}
+                                   :timeout 2000})
 ```
 
 - POST/PUT requests
