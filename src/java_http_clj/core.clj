@@ -74,6 +74,9 @@
 
 (defn- convert-body-publisher [body]
   (cond
+    (nil? body)
+    (HttpRequest$BodyPublishers/noBody)
+
     (string? body)
     (HttpRequest$BodyPublishers/ofString body)
 
