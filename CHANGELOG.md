@@ -1,3 +1,7 @@
+## 0.3.0
+
+- Fix NPE for requests without bodies
+
 ## 0.2.0
 
 - Rename a few methods
