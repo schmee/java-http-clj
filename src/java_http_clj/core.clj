@@ -58,12 +58,12 @@
        ssl-parameters   (.sslParameters ssl-parameters)
        version          (.version (version-keyword->version-enum version))))))
 
-(defn make-client
+(defn build-client
   ([] (.build (client-builder)))
   ([opts] (.build (client-builder opts))))
 
 (def ^HttpClient default-client
-  (delay (make-client)))
+  (delay (build-client)))
 
 (def ^:private byte-array-class
   (Class/forName "[B"))
@@ -109,7 +109,7 @@
       uri                      (.uri (URI/create uri))
       version                  (.version (version-keyword->version-enum version)))))
 
-(defn make-request
+(defn build-request
   ([] (.build (request-builder {})))
   ([req-map] (.build (request-builder req-map))))
 
@@ -124,7 +124,7 @@
     :input-stream bh-of-input-stream
     :byte-array bh-of-byte-array))
 
-(defn resp->ring [^HttpResponse resp]
+(defn response->map [^HttpResponse resp]
   {:status (.statusCode resp)
    :body (.body resp)
    :version (-> resp .version .name)
@@ -137,12 +137,12 @@
     (apply [this x] (f x))))
 
 (def ^:private ^Function resp->ring-function
-  (clj-fn->function resp->ring))
+  (clj-fn->function response->map))
 
 (defn- convert-request [req]
   (cond
-    (map? req) (make-request req)
-    (string? req) (make-request {:uri req})
+    (map? req) (build-request req)
+    (string? req) (build-request {:uri req})
     (instance? HttpRequest req) req))
 
 (defn send
@@ -152,7 +152,7 @@
    (let [^HttpClient client (or client @default-client)
          req' (convert-request req)
          resp (.send client req' (convert-body-handler as))]
-     (if raw? resp (resp->ring resp)))))
+     (if raw? resp (response->map resp)))))
 
 (defn send-async
   ([req]
@@ -166,7 +166,6 @@
        (not raw?)  (.thenApply resp->ring-function)
        callback    (.thenApply (clj-fn->function callback))
        ex-handler  (.exceptionally (clj-fn->function ex-handler))))))
-
 
 (defn- shorthand-docstring [method]
   (str "Send a " (method-keyword->str method) " request to `uri`.
@@ -196,15 +195,15 @@
   `(alter-meta! ~var #(assoc % :doc ~docstring)))
 
 (add-docstring #'default-client
-  "Used for request unless client is explicitly passed. Equivalent to `(make-client)`.")
+  "Used for request unless client is explicitly passed. Equivalent to `(build-client)`.")
 
 (add-docstring #'client-builder
-  "Same as [[make-client]], but returns a [HttpClient.Builder](https://docs.oracle.com/en/java/javase/11/docs/api/java.net.http/java/net/http/HttpClient.Builder.html) instead of a [HttpClient](https://docs.oracle.com/en/java/javase/11/docs/api/java.net.http/java/net/http/HttpClient.html).
+  "Same as [[build-client]], but returns a [HttpClient.Builder](https://docs.oracle.com/en/java/javase/11/docs/api/java.net.http/java/net/http/HttpClient.Builder.html) instead of a [HttpClient](https://docs.oracle.com/en/java/javase/11/docs/api/java.net.http/java/net/http/HttpClient.html).
 
-  See [[make-client]] for a description of `opts`.")
+  See [[build-client]] for a description of `opts`.")
 
 
-(add-docstring #'make-client
+(add-docstring #'build-client
   "Used to build a client. See [HttpClient.Builder](https://docs.oracle.com/en/java/javase/11/docs/api/java.net.http/java/net/http/HttpClient.Builder.html) for a more detailed description of the options.
 
   The `opts` map takes the following keys:
@@ -222,9 +221,9 @@
   Equivalent to `(.build (client-builder opts))`.")
 
 (add-docstring #'request-builder
-  "Same as [[make-request]], but returns a [HttpRequest.Builder](https://docs.oracle.com/en/java/javase/11/docs/api/java.net.http/java/net/http/HttpRequest.Builder.html) instead of a [HttpRequest](https://docs.oracle.com/en/java/javase/11/docs/api/java.net.http/java/net/http/HttpRequest.html).")
+  "Same as [[build-request]], but returns a [HttpRequest.Builder](https://docs.oracle.com/en/java/javase/11/docs/api/java.net.http/java/net/http/HttpRequest.Builder.html) instead of a [HttpRequest](https://docs.oracle.com/en/java/javase/11/docs/api/java.net.http/java/net/http/HttpRequest.html).")
 
-(add-docstring #'make-request
+(add-docstring #'build-request
   "Constructs a [java.net.http.HttpRequest](https://docs.oracle.com/en/java/javase/11/docs/api/java.net.http/java/net/http/HttpRequest.html) from a map.
 
   See [[send]] for a description of `req-map`.
@@ -261,7 +260,7 @@
 
 (add-docstring #'send-async
   "Sends a request asynchronously and immediately returns a [CompletableFuture](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/CompletableFuture.html). Converts the
-   eventual response to a map as per [[resp->ring]].
+   eventual response to a map as per [[response->map]].
 
   See [[send]] for a description of `req` and `opts`.
 
@@ -270,7 +269,7 @@
   `ex-handler` is a one argument function that will be called if an exception is thrown
    anywhere during the request.")
 
-(add-docstring #'resp->ring
+(add-docstring #'response->map
   "Converts a [HttpResponse](https://docs.oracle.com/en/java/javase/11/docs/api/java.net.http/java/net/http/HttpResponse.html) into a map.
 
   The response map contains the following keys:
