@@ -124,10 +124,15 @@
     :input-stream bh-of-input-stream
     :byte-array bh-of-byte-array))
 
+(defn- version-enum->version-keyword [^HttpClient$Version version]
+  (case (.name version)
+    "HTTP_1_1" :http1.1
+    "HTTP_2"   :http2))
+
 (defn response->map [^HttpResponse resp]
   {:status (.statusCode resp)
    :body (.body resp)
-   :version (-> resp .version .name)
+   :version (-> resp .version version-enum->version-keyword)
    :headers (into {}
                   (map (fn [[k v]] [k (if (> (count v) 1) (vec v) (first v))]))
                   (.map (.headers resp)))})
@@ -245,7 +250,7 @@
   - `:method` - the HTTP method as a keyword (e.g `:get`, `:put`, `:post`)
   - `:timeout` - the request timeout in milliseconds or a `java.time.Duration`
   - `:uri` - the request uri
-  - `:version` - which HTTP protocol to use: one of `:http1.1` or `:http2`
+  - `:version` - the HTTP protocol version, one of `:http1.1` or `:http2`
 
   `opts` is a map containing one of the following keywords:
 
@@ -277,4 +282,4 @@
    - `:body` - the response body
    - `:headers` - the response headers (map of string form string or list of string)
    - `:status` - the HTTP status code
-   - `:version` - the version of the HTTP protocol that was used (`:http1.1` or `:http2`")
+   - `:version` - the HTTP protocol version, one of `:http1.1` or `:http2`")
