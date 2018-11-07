@@ -2,7 +2,7 @@
 
 Today [clj-http](https://github.com/dakrone/clj-http) is the de-facto standard HTTP client for Clojure. It is an excellent library, but it is also a large dependency since it is based on [Apache HTTP](https://hc.apache.org/httpcomponents-client-ga/). It also doesn't support HTTP/2 (yet).
 
-Enter java-http-clj. It is inspired by both clj-http and [Ring](https://github.com/ring-clojure/ring/blob/master/SPEC), and built on the `java.net.http` package shipped with JDK starting with Java 11. As such it comes with _no_ extra dependencies if you're already using Java 11. It also fully supports HTTP/2 out of the box.
+Enter java-http-clj. It is inspired by both clj-http and [Ring](https://github.com/ring-clojure/ring/blob/master/SPEC) and built on `java.net.http` that ships with with Java 11. As such it comes with _no_ extra dependencies if you're already using Java 11, and it fully supports HTTP/2 out of the box.
 
 java-http-clj is alpha quality. Expect better testing and specs soon!
 

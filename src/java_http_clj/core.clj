@@ -257,14 +257,14 @@
 
   `opts` is a map containing one of the following keywords:
 
-  `:as` - converts the response body to one of the following formats:
+  - `:as` - converts the response body to one of the following formats:
     `:string` - a java.lang.String (the default)
     `:byte-array` - a Java primitive byte array.
     `:input-stream` - a java.io.InputStream.
 
-  `:client` - the `java.net.http.HttpClient` to use for the request. Defaults to [[default-client]].
+  - `:client` - the `java.net.http.HttpClient` to use for the request. Defaults to [[default-client]].
 
-  `:raw?` - if true, skip the Ring format conversion and return the `java.net.http.HttpResponse`")
+  - `:raw?` - if true, skip the Ring format conversion and return the `java.net.http.HttpResponse`")
 
 (add-docstring #'send-async
   "Sends a request asynchronously and immediately returns a [CompletableFuture](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/CompletableFuture.html). Converts the
