@@ -63,7 +63,7 @@
   ([opts] (.build (client-builder opts))))
 
 (def ^HttpClient default-client
-  (delay (build-client)))
+  (delay (HttpClient/newHttpClient)))
 
 (def ^:private byte-array-class
   (Class/forName "[B"))
@@ -203,7 +203,7 @@
   `(alter-meta! ~var #(assoc % :doc ~docstring)))
 
 (add-docstring #'default-client
-  "Used for request unless a client is explicitly passed. Equivalent to `(build-client)`.")
+  "Used for requests unless a client is explicitly passed. Equal to [HttpClient.newHttpClient()](https://docs.oracle.com/en/java/javase/11/docs/api/java.net.http/java/net/http/HttpClient.html#newHttpClient%28%29).")
 
 (add-docstring #'client-builder
   "Same as [[build-client]], but returns a [HttpClient.Builder](https://docs.oracle.com/en/java/javase/11/docs/api/java.net.http/java/net/http/HttpClient.Builder.html) instead of a [HttpClient](https://docs.oracle.com/en/java/javase/11/docs/api/java.net.http/java/net/http/HttpClient.html).
