@@ -4,7 +4,7 @@ Today [clj-http](https://github.com/dakrone/clj-http) is the de-facto standard H
 
 Enter java-http-clj. It is inspired by both clj-http and [Ring](https://github.com/ring-clojure/ring/blob/master/SPEC) and built on `java.net.http` that ships with with Java 11. As such it comes with _no_ extra dependencies if you're already using Java 11, and it fully supports HTTP/2 out of the box.
 
-java-http-clj is alpha quality. Expect better testing and specs soon!
+java-http-clj is alpha quality, but all the heavy lifting is done by java.net.http, and there are tests and documentation in place. Expect specs soon!
 
 ## Installation
 
