@@ -20,5 +20,6 @@
                    :injections [(require 'pjstadig.humane-test-output)
                                 (pjstadig.humane-test-output/activate!)]
                    :codox {:metadata {:doc/format :markdown}
-                           :output-path "codox"}}}
+                           :output-path "codox"
+                           :source-paths ["src"]}}}
   :repl-options {:init-ns java-http-clj.core})
