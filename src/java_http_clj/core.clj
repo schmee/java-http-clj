@@ -1,7 +1,8 @@
 (ns java-http-clj.core
   (:refer-clojure :exclude [send get])
-  (:require [clojure.string :as str])
-  (:import [java.net URI]
+  (:require [clojure.string :as str]
+            [clojure.spec.alpha :as s])
+  (:import [java.net CookieHandler ProxySelector URI]
            [java.net.http
             HttpClient
             HttpClient$Builder
@@ -13,8 +14,9 @@
             HttpResponse
             HttpResponse$BodyHandlers]
            [java.time Duration]
-           [java.util.concurrent CompletableFuture]
-           [java.util.function Function Supplier]))
+           [java.util.concurrent CompletableFuture Executor]
+           [java.util.function Function Supplier]
+           [javax.net.ssl SSLContext SSLParameters]))
 
 (set! *warn-on-reflection* true)
 
@@ -190,10 +192,139 @@
      (~['uri 'req-map 'opts]
        (send (merge ~'req-map ~{:uri 'uri :method method}) ~'opts))))
 
+(def ^:private shorthands [:get :head :post :put :delete])
+
 (defmacro ^:private def-all-shorthands []
-  `(do ~@(map #(defshorthand %) [:get :head :post :put :delete])))
+  `(do ~@(map defshorthand shorthands)))
 
 (def-all-shorthands)
+
+
+;; ==============================  SPECS  ==============================
+
+
+(s/def ::expect-continue? boolean?)
+(s/def ::headers (s/map-of string? (s/or :string string? :seq-of-strings (s/+ string?))))
+(s/def ::method keyword?)
+(s/def ::timeout (s/or :millis pos-int? :duration #(instance? Duration %)))
+(s/def ::uri string?)
+(s/def ::version #{:http1.1 :http2})
+
+(s/def ::req-map
+  (s/keys :req-un [::uri]
+          :opt-un [::expect-continue? ::headers ::method ::timeout ::version]))
+
+(s/fdef request-builder
+  :args (s/cat :req-map (s/? ::req-map))
+  :ret #(instance? HttpRequest$Builder %))
+
+(s/fdef build-request
+  :args (s/cat :req-map (s/? ::req-map))
+  :ret #(instance? HttpRequest %))
+
+(s/def ::connect-timeout ::timeout)
+(s/def ::cookie-handler #(instance? CookieHandler %))
+(s/def ::executor #(instance? Executor %))
+(s/def ::follow-redirects #{:always :default :never})
+(s/def ::priority (s/int-in 1 257))
+(s/def ::proxy #(instance? ProxySelector %))
+(s/def ::ssl-context #(instance? SSLContext %))
+(s/def ::ssl-parameters #(instance? SSLParameters %))
+
+(s/def ::client-opts
+  (s/keys :opt-un
+          [::connect-timeout
+           ::cookie-handler
+           ::executor
+           ::follow-redirects
+           ::priority
+           ::proxy
+           ::ssl-context
+           ::ssl-parameters
+           ::version]))
+
+(s/fdef client-builder
+  :args (s/cat :opts (s/? ::client-opts))
+  :ret #(instance? HttpClient$Builder %))
+
+(s/fdef build-client
+  :args (s/cat :opts (s/? ::client-opts))
+  :ret #(instance? HttpClient %))
+
+(s/def ::request
+  (s/or :uri ::uri
+        :req-map ::req-map
+        :raw #(instance? HttpRequest %)))
+
+(s/def ::as #{:byte-array :input-stream :string})
+(s/def ::client #(instance? HttpClient %))
+(s/def ::raw? boolean?)
+
+(s/def ::send-opts
+  (s/keys :opt-un [::as ::client ::raw?]))
+
+(s/def ::body
+  (s/or :byte-array bytes?
+        :input-stream #(instance? java.io.InputStream %)
+        :string string?))
+
+(s/def ::status
+  (s/int-in 100 600))
+
+(s/def ::response-map
+  (s/keys :req-un [::body ::headers ::status ::version]))
+
+(s/def ::response
+  (s/or :map ::response-map
+        :raw #(instance? HttpResponse %)))
+
+(s/fdef send
+  :args (s/cat :req ::request
+               :opts (s/? ::send-opts))
+  :ret ::response)
+
+;; Use `fn?` instead of `fspec` for the callbacks due to issues like
+;; https://dev.clojure.org/jira/browse/CLJ-1936 and
+;; https://dev.clojure.org/jira/browse/CLJ-2217
+(s/fdef send-async
+  :args (s/alt :req
+               (s/cat :req ::request)
+
+               :req+opts
+               (s/cat :req ::request
+                      :opts ::send-opts)
+
+               :req+opts+callbacks
+               (s/cat :req ::request
+                      :opts ::send-opts
+                      :callback (s/nilable fn?)
+                      ; :callback (s/fspec
+                      ;             :args (s/cat :response ::response)
+                      ;             :ret any?)
+                      :ex-handler (s/nilable fn?)))
+                      ; :ex-handler (s/fspec
+                      ;               :args (s/cat :exception #(instance? Throwable %))
+                      ;               :ret any?)))
+  :ret #(instance? CompletableFuture %))
+
+(s/def ::req-map-all-optional
+  (s/keys :opt-un [::uri ::expect-continue? ::headers ::method ::timeout ::version]))
+
+(defn spec-shorthand [method]
+  (let [method-sym (symbol (-> *ns* ns-name name) (name method))]
+    `(s/fdef ~method-sym
+       :args ~'(s/alt :uri (s/cat :uri ::uri)
+                      :uri+req-map (s/cat :uri ::uri
+                                          :req-map ::req-map-all-optional)
+                      :uri+req-map+opts (s/cat :uri ::uri
+                                               :req-map ::req-map-all-optional
+                                               :opts ::send-opts))
+       :ret ::response)))
+
+(defmacro ^:private spec-all-shorthands []
+  `(do ~@(map spec-shorthand shorthands)))
+
+(spec-all-shorthands)
 
 
 ;; ==============================  DOCSTRINGS  ==============================
