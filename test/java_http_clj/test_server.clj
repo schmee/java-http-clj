@@ -1,4 +1,4 @@
-(ns java-http-clj.test-server
+(ns ^:skip-test java-http-clj.test-server
   (:require [clojure.java.io :as io]
             [clojure.test :refer :all]
             [compojure.core :refer :all]

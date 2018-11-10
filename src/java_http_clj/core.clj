@@ -1,7 +1,8 @@
 (ns java-http-clj.core
   (:refer-clojure :exclude [send get])
-  (:require [clojure.string :as str])
-  (:import [java.net URI]
+  (:require [clojure.string :as str]
+            [clojure.spec.alpha :as s])
+  (:import [java.net CookieHandler ProxySelector URI]
            [java.net.http
             HttpClient
             HttpClient$Builder
@@ -13,8 +14,9 @@
             HttpResponse
             HttpResponse$BodyHandlers]
            [java.time Duration]
-           [java.util.concurrent CompletableFuture]
-           [java.util.function Function Supplier]))
+           [java.util.concurrent CompletableFuture Executor]
+           [java.util.function Function Supplier]
+           [javax.net.ssl SSLContext SSLParameters]))
 
 (set! *warn-on-reflection* true)
 
@@ -194,6 +196,106 @@
   `(do ~@(map #(defshorthand %) [:get :head :post :put :delete])))
 
 (def-all-shorthands)
+
+
+;; ==============================  SPECS  ==============================
+
+
+(defn instance-pred [c]
+  #(instance? c %))
+
+(s/def ::expect-continue? boolean?)
+(s/def ::headers (s/map-of string? (s/or :string string? :seq-of-strings (s/+ string?))))
+(s/def ::method #{:get :head :post :put :delete :connect :options :trace :patch})
+(s/def ::timeout (s/or :millis pos-int? :duration (instance-pred Duration)))
+(s/def ::uri string?)
+(s/def ::version #{:http1.1 :http2})
+
+(s/def ::req-map
+  (s/keys :req-un [::uri]
+          :opt-un [::expect-continue? ::headers ::method ::timeout ::version]))
+
+(s/fdef request-builder
+  :args (s/cat :req-map (s/? ::req-map))
+  :ret #(instance? HttpRequest$Builder %))
+
+(s/fdef build-request
+  :args (s/cat :req-map (s/? ::req-map))
+  :ret #(instance? HttpRequest %))
+
+(s/def ::connect-timeout ::timeout)
+(s/def ::cookie-handler (instance-pred CookieHandler))
+(s/def ::executor (instance-pred Executor))
+(s/def ::follow-redirects #{:always :default :never})
+(s/def ::priority (s/int-in 1 257))
+(s/def ::proxy (instance-pred ProxySelector))
+(s/def ::ssl-context (instance-pred SSLContext))
+(s/def ::ssl-parameters (instance-pred SSLParameters))
+
+(s/def ::client-opts
+  (s/keys :opt-un
+          [::connect-timeout ::cookie-handler ::executor
+           ::follow-redirects ::priority ::proxy
+           ::ssl-context ::ssl-parameters]))
+
+(s/fdef client-builder
+  :args (s/cat :opts (s/? ::client-opts))
+  :ret #(instance? HttpClient$Builder %))
+
+(s/fdef build-client
+  :args (s/cat :opts (s/? ::client-opts))
+  :ret #(instance? HttpClient %))
+
+(s/def ::request
+  (s/or :uri ::uri
+        :req-map ::req-map
+        :raw (instance-pred HttpRequest)))
+
+(s/def ::as #{:byte-array :input-stream :string})
+(s/def ::client (instance-pred HttpClient))
+(s/def ::raw? boolean?)
+
+(s/def ::send-opts
+  (s/keys :opt-un [::as ::client ::raw]))
+
+(s/def ::body
+  (s/or :byte-array bytes?
+        :input-stream (instance-pred java.io.InputStream)
+        :string string?))
+
+(s/def ::status
+  (s/int-in 0 500))
+
+(s/def ::response-map
+  (s/keys :req-un [::body ::headers ::status ::version]))
+
+(s/def ::response
+  (s/or :map ::response-map
+        :raw (instance-pred HttpResponse)))
+
+(s/fdef send
+  :args (s/cat :req ::request
+               :opts (s/? ::send-opts))
+  :ret ::response)
+
+(s/fdef send-async
+  :args (s/alt :req
+               (s/cat :req ::request)
+
+               :req+opts
+               (s/cat :req ::request
+                      :opts ::send-opts)
+
+               :req+opts+callbacks
+               (s/cat :req ::request
+                      :opts ::send-opts
+                      :callback (s/fspec
+                                  :args (s/cat :response ::response)
+                                  :ret any?)
+                      :ex-handler (s/fspec
+                                    :args (s/cat :exception (instance-pred Throwable))
+                                    :ret any?)))
+  :ret (instance-pred CompletableFuture))
 
 
 ;; ==============================  DOCSTRINGS  ==============================

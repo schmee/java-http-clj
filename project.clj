@@ -11,14 +11,16 @@
                                   [pjstadig/humane-test-output "0.8.3"]
                                   [ring "1.7.1"]
                                   [ring/ring-defaults "0.3.2"]]
-                   :source-paths ["env/dev/clj" "test"]
+                   :source-paths ["src" "env/dev/clj" "test"]
                    :plugins [[lein-codox "0.10.5"]
                              [com.jakemccrary/lein-test-refresh "0.22.0"]]
-                   :test-selectors {:default (constantly true)
+                   :test-selectors {:default (complement :skip-test)
                                     :unit (complement :integration)
                                     :integration :integration}
                    :injections [(require 'pjstadig.humane-test-output)
-                                (pjstadig.humane-test-output/activate!)]
+                                (pjstadig.humane-test-output/activate!)
+                                (require 'java-http-clj.test-utils)
+                                (java-http-clj.test-utils/instrument)]
                    :codox {:metadata {:doc/format :markdown}
                            :output-path "codox"
                            :source-paths ["src"]}}}

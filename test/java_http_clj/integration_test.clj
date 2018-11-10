@@ -4,10 +4,13 @@
             [clojure.java.io :as io]
             [clojure.test :refer :all]
             [java-http-clj.core :refer :all]
+            [java-http-clj.test-utils :as utils]
             [mount.core :as mount])
   (:import [java.net.http HttpResponse]
            [java.util Arrays]
            [java.util.concurrent CompletableFuture]))
+
+(utils/instrument)
 
 (def port 8787)
 
