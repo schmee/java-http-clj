@@ -22,13 +22,15 @@ java-http-clj requires Java 11 or later.
 
 First, require the library:
 
-`(:require [java-http-clj.core :as http])`
+```clj
+(:require [java-http-clj.core :as http])
+```
 
 The most common HTTP methods (GET, POST, PUT, HEAD, DELETE) have a function of the same name. This function takes three arguments (where the last two are optional): a URL, a request and an options map (refer to [send](https://schmee.github.io/java-http-clj/java-http-clj.core.html#var-send) docs for details).
 
 - GET requests
 
-```
+```clj
 ;; If you don't specify any options defaults are provided
 (http/get "http://www.google.com")
 
@@ -40,7 +42,7 @@ The most common HTTP methods (GET, POST, PUT, HEAD, DELETE) have a function of t
 
 - POST/PUT requests
 
-```
+```clj
 (http/post "http://www.google.com" {:body "{\"foo\":\"bar\"}"})
 
 ;; The request body can be a string, an input stream or a byte array...
@@ -54,7 +56,7 @@ The most common HTTP methods (GET, POST, PUT, HEAD, DELETE) have a function of t
 
 To make an async request, use the `send-async` function (currently there is no sugar for async requests):
 
-```
+```clj
 ;; Returns a java.util.concurrent.CompletableFuture
 (http/send-async {:uri "http://www.google.com" :method :get})
 
@@ -69,7 +71,7 @@ To make an async request, use the `send-async` function (currently there is no s
 
 All request functions take an `opts` map for customization (refer to [send](https://schmee.github.io/java-http-clj/java-http-clj.core.html#var-send) docs for details).
 
-```
+```clj
 ;; Provide a custom client
 (def client (build-client {:follow-redirects :always}))
 (http/send {:uri "http://www.google.com" :method :get} {:client client})
