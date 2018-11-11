@@ -247,9 +247,9 @@
 
   The request map takes the following keys:
 
-  - `:body` - the request body. Can be either a string, a primitive Java byte array, or a java.io.InputStream.
+  - `:body` - the request body. Can be a string, a primitive Java byte array or a java.io.InputStream.
   - `:expect-continue?` - See the [javadoc](https://docs.oracle.com/en/java/javase/11/docs/api/java.net.http/java/net/http/HttpRequest.Builder.html#expectContinue%28boolean%29)
-  - `:headers` - a map of string to a string or a list of strings
+  - `:headers` - the HTTP headers, a map where keys are strings and values are strings or a list of strings
   - `:method` - the HTTP method as a keyword (e.g `:get`, `:put`, `:post`)
   - `:timeout` - the request timeout in milliseconds or a `java.time.Duration`
   - `:uri` - the request uri
@@ -258,13 +258,13 @@
   `opts` is a map containing one of the following keywords:
 
   - `:as` - converts the response body to one of the following formats:
-    `:string` - a java.lang.String (the default)
-    `:byte-array` - a Java primitive byte array.
-    `:input-stream` - a java.io.InputStream.
+      - `:string` - a java.lang.String (default)
+      - `:byte-array` - a Java primitive byte array.
+      - `:input-stream` - a java.io.InputStream.
 
-  - `:client` - the `java.net.http.HttpClient` to use for the request. Defaults to [[default-client]].
+  - `:client` - the [HttpClient](https://docs.oracle.com/en/java/javase/11/docs/api/java.net.http/java/net/http/HttpClient.html) to use for the request. If not provided the [[default-client]] will be used.
 
-  - `:raw?` - if true, skip the Ring format conversion and return the `java.net.http.HttpResponse`")
+  - `:raw?` - if true, skip the Ring format conversion and return the [HttpResponse](https://docs.oracle.com/en/java/javase/11/docs/api/java.net.http/java/net/http/HttpResponse.html")
 
 (add-docstring #'send-async
   "Sends a request asynchronously and immediately returns a [CompletableFuture](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/CompletableFuture.html). Converts the
@@ -272,10 +272,9 @@
 
   See [[send]] for a description of `req` and `opts`.
 
-  `callback` is a one argument function that will be applied to the response map.
+  `callback` is a one argument function that will be applied to the response on completion.
 
-  `ex-handler` is a one argument function that will be called if an exception is thrown
-   anywhere during the request.")
+  `ex-handler` is a one argument function that will be called if an exception is thrown anywhere during the request.")
 
 (add-docstring #'response->map
   "Converts a [HttpResponse](https://docs.oracle.com/en/java/javase/11/docs/api/java.net.http/java/net/http/HttpResponse.html) into a map.
@@ -283,6 +282,6 @@
   The response map contains the following keys:
 
    - `:body` - the response body
-   - `:headers` - the response headers (map of string form string or list of string)
+   - `:headers` - the HTTP headers, a map where keys are strings and values are strings or a list of strings
    - `:status` - the HTTP status code
    - `:version` - the HTTP protocol version, one of `:http1.1` or `:http2`")

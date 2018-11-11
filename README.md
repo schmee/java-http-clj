@@ -4,7 +4,7 @@ Today [clj-http](https://github.com/dakrone/clj-http) is the de-facto standard H
 
 Enter java-http-clj. It is inspired by both clj-http and [Ring](https://github.com/ring-clojure/ring/blob/master/SPEC) and built on `java.net.http` that ships with with Java 11. As such it comes with _no_ extra dependencies if you're already using Java 11, and it fully supports HTTP/2 out of the box.
 
-java-http-clj is alpha quality, but all the heavy lifting is done by java.net.http, and there are tests and documentation in place. Expect specs soon!
+java-http-clj is alpha quality, but all the heavy lifting is done by java.net.http and there are tests and documentation in place. Expect specs soon!
 
 ## Installation
 
@@ -24,7 +24,7 @@ First, require the library:
 
 `(:require [java-http-clj.core :as http])`
 
-The most common HTTP methods (GET, POST, PUT, HEAD, DELETE) have a function of the same name. This function takes three arguments (where the last two are optional): a URL, request parameters and a map of options (described below).
+The most common HTTP methods (GET, POST, PUT, HEAD, DELETE) have a function of the same name. This function takes three arguments (where the last two are optional): a URL, a request and an options map (refer to [send](https://schmee.github.io/java-http-clj/java-http-clj.core.html#var-send) docs for details).
 
 - GET requests
 
@@ -39,13 +39,14 @@ The most common HTTP methods (GET, POST, PUT, HEAD, DELETE) have a function of t
 ```
 
 - POST/PUT requests
+
 ```
 (http/post "http://www.google.com" {:body "{\"foo\":\"bar\"}"})
 
-;; The body can be a string, an input stream or a byte array
+;; The request body can be a string, an input stream or a byte array...
 (http/post "http://www.google.com" {:body (.getBytes "{\"foo\":\"bar\"}")})
 
-;; Return the response body as a byte array
+;; ...and you can choose the response body format with the `:as` option
 (http/post "http://www.google.com" {:body "{\"foo\":\"bar\"}"} {:as :byte-array})
 ```
 
@@ -54,7 +55,7 @@ The most common HTTP methods (GET, POST, PUT, HEAD, DELETE) have a function of t
 To make an async request, use the `send-async` function (currently there is no sugar for async requests):
 
 ```
-;; Returns a future
+;; Returns a java.util.concurrent.CompletableFuture
 (http/send-async {:uri "http://www.google.com" :method :get})
 
 ;; Takes an optional callback and exception handler
@@ -64,15 +65,19 @@ To make an async request, use the `send-async` function (currently there is no s
 
 ```
 
-### Advanced
+- Options
 
-All functions take a map of options as the last argument. The map accepts three arguments: `:client`, `:as` and `:raw?`.
+All request functions take an `opts` map for customization (refer to [send](https://schmee.github.io/java-http-clj/java-http-clj.core.html#var-send) docs for details).
 
-The `:client` option allows you to send the request with a custom client (by default, java-http-clj reuses a default client for each request). This is useful if you want to configure advanced options on the client such as SSL contexts or cookie stores.
+```
+;; Provide a custom client
+(def client (build-client {:follow-redirects :always}))
+(http/send {:uri "http://www.google.com" :method :get} {:client client})
 
-The `:as` option converts the response body to the chosen format. It supports `:string`, `:byte-array` and `:input-stream` which correspond to their respective Java classes.
-
-If the `:raw?` option is true, the Ring conversion of the response is skipped and instead the underlying `HttpResponse` object is returned directly.
+;; Skip map conversion and return the java.net.http.HttpResponse object
+user=> (http/send {:uri "http://www.google.com" :method :get} {:raw? true})
+object[jdk.internal.net.http.HttpResponseImpl "0x88edd90" "(GET http://www.google.com) 200"]
+```
 
 ## Design
 
