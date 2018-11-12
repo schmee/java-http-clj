@@ -1,4 +1,4 @@
-(defproject java-http-clj "0.4.0-SNAPSHOT"
+(defproject java-http-clj "0.3.1"
   :description "A lightweight Clojure wrapper for java.net.http"
   :url "http://www.github.com/schmee/java-http-clj"
   :license {:name "MIT"
@@ -11,10 +11,10 @@
                                   [pjstadig/humane-test-output "0.8.3"]
                                   [ring "1.7.1"]
                                   [ring/ring-defaults "0.3.2"]]
-                   :source-paths ["env/dev/clj" "test"]
+                   :source-paths ["src" "env/dev/clj" "test"]
                    :plugins [[lein-codox "0.10.5"]
                              [com.jakemccrary/lein-test-refresh "0.22.0"]]
-                   :test-selectors {:default (constantly true)
+                   :test-selectors {:default (complement :skip-test)
                                     :unit (complement :integration)
                                     :integration :integration}
                    :injections [(require 'pjstadig.humane-test-output)

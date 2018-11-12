@@ -2,6 +2,7 @@
   (:refer-clojure :exclude [send get])
   (:require [clojure.java.io :as io]
             [clojure.test :refer :all]
+            [clojure.spec.test.alpha :as st]
             [java-http-clj.core :refer :all])
   (:import [java.net CookieManager ProxySelector URI]
            [java.net.http
@@ -15,6 +16,8 @@
            [java.util.concurrent Executors]
            [java.util.function BiPredicate]
            [javax.net.ssl SSLContext SSLParameters]))
+
+(st/instrument)
 
 (defn build-fake-response [{:keys [status body version headers]}]
   (reify HttpResponse

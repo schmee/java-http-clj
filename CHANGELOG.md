@@ -1,3 +1,7 @@
+## 0.3.1
+
+- Add specs for all API functions
+
 ## 0.3.0
 
 - Fix NPE for requests without bodies

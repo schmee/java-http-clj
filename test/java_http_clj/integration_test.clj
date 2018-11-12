@@ -3,11 +3,14 @@
   (:require [cemerick.url :refer [url]]
             [clojure.java.io :as io]
             [clojure.test :refer :all]
+            [clojure.spec.test.alpha :as st]
             [java-http-clj.core :refer :all]
             [mount.core :as mount])
   (:import [java.net.http HttpResponse]
            [java.util Arrays]
            [java.util.concurrent CompletableFuture]))
+
+(st/instrument)
 
 (def port 8787)
 
