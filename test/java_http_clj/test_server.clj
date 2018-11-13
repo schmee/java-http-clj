@@ -4,7 +4,7 @@
             [compojure.core :refer :all]
             [compojure.route :as route]
             [mount.core :as mount]
-            [ring.adapter.jetty :as jetty]
+            [ring.adapter.jetty9 :as jetty]
             [ring.middleware.defaults :refer :all]))
 
 (defroutes app
@@ -16,12 +16,22 @@
   (GET "/redir" [] {:status 302 :headers {"Location" "/target"}})
   (GET "/target" [] "did redirect"))
 
+(def ws-handler {:on-connect (fn [ws])
+                 :on-error (fn [ws e])
+                 :on-close (fn [ws status-code reason])
+                 :on-text
+                 (fn [ws text-message]
+                   (jetty/send! ws (str "SERVER: " text-message)))
+                 :on-bytes
+                 (fn [ws bs offset len]
+                   (jetty/send! ws bs))})
+
 (mount/defstate server
   :start
   (let [{:keys [port] :or {port 8080}} (mount/args)]
-    (println "Starting test server on port" port)
-    (jetty/run-jetty (wrap-defaults app api-defaults) {:port port :join? false}))
-  :stop
-  (do
-    (println "Stopping test server")
-    (.stop server)))
+    (jetty/run-jetty
+      (wrap-defaults app api-defaults)
+      {:port port
+       :websockets {"/ws" ws-handler}
+       :join? false}))
+  :stop (.stop server))

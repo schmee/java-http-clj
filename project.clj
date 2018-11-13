@@ -6,6 +6,7 @@
   :dependencies [[org.clojure/clojure "1.10.0-beta5"]]
   :profiles {:dev {:dependencies [[com.cemerick/url "0.1.1"]
                                   [compojure "1.6.1"]
+                                  [info.sunng/ring-jetty9-adapter "0.12.2"]
                                   [mount "0.1.14"]
                                   [org.clojure/tools.namespace "0.2.11"]
                                   [pjstadig/humane-test-output "0.8.3"]

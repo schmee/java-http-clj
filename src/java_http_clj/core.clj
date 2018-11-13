@@ -1,7 +1,8 @@
 (ns java-http-clj.core
   (:refer-clojure :exclude [send get])
   (:require [clojure.string :as str]
-            [clojure.spec.alpha :as s])
+            [clojure.spec.alpha :as s]
+            [java-http-clj.util :as util :refer [add-docstring]])
   (:import [java.net CookieHandler ProxySelector URI]
            [java.net.http
             HttpClient
@@ -19,11 +20,6 @@
            [javax.net.ssl SSLContext SSLParameters]))
 
 (set! *warn-on-reflection* true)
-
-(defn- convert-timeout [t]
-  (if (integer? t)
-    (Duration/ofMillis t)
-    t))
 
 (defn- version-keyword->version-enum [version]
   (case version
@@ -50,7 +46,7 @@
                  ssl-parameters
                  version]} opts]
      (cond-> (HttpClient/newBuilder)
-       connect-timeout  (.connectTimeout (convert-timeout connect-timeout))
+       connect-timeout  (.connectTimeout (util/convert-timeout connect-timeout))
        cookie-handler   (.cookieHandler cookie-handler)
        executor         (.executor executor)
        follow-redirects (.followRedirects (convert-follow-redirect follow-redirects))
@@ -97,7 +93,6 @@
 
 (defn- method-keyword->str [method]
   (str/upper-case (name method)))
-
 (defn request-builder ^HttpRequest$Builder [opts]
   (let [{:keys [expect-continue?
                 headers
@@ -110,7 +105,7 @@
       (some? expect-continue?) (.expectContinue expect-continue?)
       (seq headers)            (.headers (into-array String (eduction convert-headers-xf headers)))
       method                   (.method (method-keyword->str method) (convert-body-publisher body))
-      timeout                  (.timeout (convert-timeout timeout))
+      timeout                  (.timeout (util/convert-timeout timeout))
       uri                      (.uri (URI/create uri))
       version                  (.version (version-keyword->version-enum version)))))
 
@@ -142,12 +137,9 @@
                   (map (fn [[k v]] [k (if (> (count v) 1) (vec v) (first v))]))
                   (.map (.headers resp)))})
 
-(defn- clj-fn->function ^Function [f]
-  (reify Function
-    (apply [this x] (f x))))
 
 (def ^:private ^Function resp->ring-function
-  (clj-fn->function response->map))
+  (util/clj-fn->function response->map))
 
 (defn- convert-request [req]
   (cond
@@ -174,8 +166,8 @@
          req' (convert-request req)]
      (cond-> (.sendAsync client req' (convert-body-handler as))
        (not raw?)  (.thenApply resp->ring-function)
-       callback    (.thenApply (clj-fn->function callback))
-       ex-handler  (.exceptionally (clj-fn->function ex-handler))))))
+       callback    (.thenApply (util/clj-fn->function callback))
+       ex-handler  (.exceptionally (util/clj-fn->function ex-handler))))))
 
 (defn- shorthand-docstring [method]
   (str "Sends a " (method-keyword->str method) " request to `uri`.
@@ -329,9 +321,6 @@
 
 ;; ==============================  DOCSTRINGS  ==============================
 
-
-(defmacro ^:private add-docstring [var docstring]
-  `(alter-meta! ~var #(assoc % :doc ~docstring)))
 
 (add-docstring #'default-client
   "Used for requests unless a client is explicitly passed. Equal to [HttpClient.newHttpClient()](https://docs.oracle.com/en/java/javase/11/docs/api/java.net.http/java/net/http/HttpClient.html#newHttpClient%28%29).")
