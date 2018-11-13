@@ -1,3 +1,7 @@
+## 0.4.0
+
+- Add WebSocket API
+
 ## 0.3.1
 
 - Add specs for all API functions
