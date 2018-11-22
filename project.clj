@@ -1,4 +1,4 @@
-(defproject java-http-clj "0.3.1-SNAPSHOT"
+(defproject java-http-clj "0.4.0"
   :description "A lightweight Clojure wrapper for java.net.http"
   :url "http://www.github.com/schmee/java-http-clj"
   :license {:name "MIT"
