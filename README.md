@@ -83,6 +83,34 @@ user=> (http/send {:uri "http://www.google.com" :method :get} {:raw? true})
 object[jdk.internal.net.http.HttpResponseImpl "0x88edd90" "(GET http://www.google.com) 200"]
 ```
 
+## WebSockets
+
+java-http-clj also includes a WebSocket API. The WebSocket API in java.net.http is based around CompletableFuture and functional interfaces which interop poorly with Clojure. Hence, java-http-clj presents a simplified, synchronous API that covers the basic use-cases.
+
+The API consists of three methods: `build-websocket`, `send` and `close`. The Java API requires you to maintain a request counter for each invocation, but java-http-clj manages this for you automatically.
+
+```clj
+;; Create a websocket
+(def ws
+  (build-websocket
+    "ws://localhost:8080/ws"
+    {:on-text (fn [ws string last?] (println "Received some text!" string))
+     :on-binary (fn [ws byte-array last?] (println "Got some bytes!" (vec byte-array)))
+     :on-error (fn [ws throwable] (println "Uh oh!" (.getMessage throwable)))}))
+
+;; Send some data (strings, ByteBuffers, byte arrays or something that can be coerced to a string)
+   and return the websocket
+(-> ws
+    (send "abc")
+    (send (byte-array [1 2 3]))
+    (send 123))
+
+;; Close the output of websocket when you are done
+(close ws)
+```
+
+There is also `build-websocket-async` and `send-async` that return a `CompletableFuture`. These functions are probably best used together with some asynchronous framework that allows you to compose `CompletableFutures` (for example [Manifold](https://github.com/ztellman/manifold)).
+
 ## Design
 
 ### Goals
