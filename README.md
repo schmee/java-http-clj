@@ -8,7 +8,7 @@ java-http-clj is a new library, but all the heavy lifting is done by java.net.ht
 
 ## Installation
 
-`[java-http-clj "0.3.1"]`
+`[java-http-clj "0.4.0"]`
 
 java-http-clj requires Clojure 1.9+ and Java 11+.
 
@@ -94,9 +94,12 @@ The API consists of three methods: `build-websocket`, `send` and `close`. The Ja
 (def ws
   (build-websocket
     "ws://localhost:8080/ws"
-    {:on-text (fn [ws string last?] (println "Received some text!" string))
-     :on-binary (fn [ws byte-array last?] (println "Got some bytes!" (vec byte-array)))
-     :on-error (fn [ws throwable] (println "Uh oh!" (.getMessage throwable)))}))
+    {:on-text (fn [ws string last?]
+                (println "Received some text!" string))
+     :on-binary (fn [ws byte-array last?]
+                  (println "Got some bytes!" (vec byte-array)))
+     :on-error (fn [ws throwable]
+                 (println "Uh oh!" (.getMessage throwable)))}))
 
 ;; Send some data (strings, ByteBuffers, byte arrays or something that can be coerced to a string)
    and return the websocket
