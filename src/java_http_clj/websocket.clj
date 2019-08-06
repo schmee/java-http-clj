@@ -67,17 +67,21 @@
            (.onText that ws char-seq last?)))))))
 
 (defn- wrap-listener-fns [listener-fns]
-  (let [not-receive-methods #{:on-close :on-error}
+  (let [non-receive-methods #{:on-close :on-error}
         inc-and-nil (fn [f]
                       (fn [& args]
                         (let [^WebSocket ws (first args)]
                           (.request ws 1)
                           (apply f args)
-                          nil)))]
+                          nil)))
+        return-nil (fn [f]
+                     (fn [& args]
+                       (apply f args)
+                       nil))]
     (into {}
       (for [[k f] listener-fns]
-        (if (contains? not-receive-methods f)
-          [k f]
+        (if (contains? non-receive-methods k)
+          [k (return-nil f)]
           [k (inc-and-nil f)])))))
 
 (defn build-websocket-async
@@ -129,10 +133,8 @@
   send
   (comp join send-async))
 
-(def ^:const ^:private normal-closure WebSocket/NORMAL_CLOSURE)
-
 (defn close
- ([^WebSocket ws] (.sendClose ws normal-closure ""))
+ ([^WebSocket ws] (.sendClose ws WebSocket/NORMAL_CLOSURE ""))
  ([^WebSocket ws status-code] (.sendClose ws status-code ""))
  ([^WebSocket ws status-code reason] (.sendClose ws status-code reason)))
 
