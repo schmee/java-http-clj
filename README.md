@@ -139,4 +139,6 @@ Bug fixes are always welcome, just open a PR! If you want to implement a new fea
 
 ## License
 
+Copyright © 2018-2019 John Schmidt
+
 Released under the MIT License: http://www.opensource.org/licenses/mit-license.php
