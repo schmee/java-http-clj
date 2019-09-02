@@ -205,6 +205,9 @@
 
 (s/def ::reason string?)
 
+(s/def ::completable-future
+  #(instance? CompletableFuture %))
+
 (s/fdef close
   :args (s/alt :default (s/cat :websocket ::websocket)
                :status-code (s/cat :websocket ::websocket
@@ -212,7 +215,7 @@
                :status-code+reason (s/cat :websocket ::websocket
                                           :status-code ::status-code
                                           :reason ::reason))
-  :ret ::websocket)
+  :ret ::completable-future)
 
 
 ;; ==============================  DOCSTRINGS  ==============================
