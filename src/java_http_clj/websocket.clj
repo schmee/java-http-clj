@@ -14,9 +14,9 @@
 
 (set! *warn-on-reflection* true)
 
-(defn ^WebSocket$Builder websocket-builder
-  ([] (websocket-builder {}))
-  ([{:keys [client connect-timeout headers subprotocols]}]
+(defn websocket-builder
+  (^WebSocket$Builder [] (websocket-builder {}))
+  (^WebSocket$Builder [{:keys [client connect-timeout headers subprotocols]}]
    (let [^HttpClient client (or client @core/default-client)
          builder (.newWebSocketBuilder client)]
      (if headers
@@ -34,7 +34,7 @@
     ba))
 
 (defn websocket-listener
-  ([{:keys [on-binary on-close on-error on-open on-ping on-pong on-text]}]
+  (^WebSocket$Listener [{:keys [on-binary on-close on-error on-open on-ping on-pong on-text]}]
    (let [that (reify WebSocket$Listener)]
      (reify WebSocket$Listener
        (onBinary [this ws byte-buffer last?]
@@ -85,9 +85,9 @@
           [k (inc-and-nil f)])))))
 
 (defn build-websocket-async
-  ([uri listener-fns]
+  (^CompletableFuture [uri listener-fns]
    (build-websocket-async uri listener-fns {}))
-  ([uri listener-fns builder-opts]
+  (^CompletableFuture [uri listener-fns builder-opts]
    (.buildAsync
      (websocket-builder builder-opts)
      (URI/create uri)
@@ -114,9 +114,9 @@
     (.sendText ws (str this) last?)))
 
 (defn send-async
-  ([ws payload]
+  (^CompletableFuture [ws payload]
    (send-async ws payload true))
-  ([^WebSocket ws payload last?]
+  (^CompletableFuture [^WebSocket ws payload last?]
    (-send payload ws last?)))
 
 (defn- join [^CompletableFuture cf]
@@ -124,7 +124,8 @@
 
 (def
   ^{:arglists '([uri listener-fns]
-                [uri listener-fns builder-opts])}
+                [uri listener-fns builder-opts])
+    :tag WebSocket}
   build-websocket
   (comp join build-websocket-async))
 
@@ -133,10 +134,10 @@
   send
   (comp join send-async))
 
-(defn close
- ([^WebSocket ws] (.sendClose ws WebSocket/NORMAL_CLOSURE ""))
- ([^WebSocket ws status-code] (.sendClose ws status-code ""))
- ([^WebSocket ws status-code reason] (.sendClose ws status-code reason)))
+(defn ^CompletableFuture close
+ (^CompletableFuture [^WebSocket ws] (.sendClose ws WebSocket/NORMAL_CLOSURE ""))
+ (^CompletableFuture [^WebSocket ws status-code] (.sendClose ws status-code ""))
+ (^CompletableFuture [^WebSocket ws status-code reason] (.sendClose ws status-code reason)))
 
 
 ;; ==============================  SPECS  ==============================

@@ -15,6 +15,8 @@
            [java.time Duration]
            [java.util Arrays]))
 
+(set! *warn-on-reflection* true)
+
 (st/instrument)
 
 (def port 8787)

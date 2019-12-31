@@ -57,8 +57,8 @@
        version          (.version (version-keyword->version-enum version))))))
 
 (defn build-client
-  ([] (.build (client-builder)))
-  ([opts] (.build (client-builder opts))))
+  (^HttpClient [] (.build (client-builder)))
+  (^HttpClient [opts] (.build (client-builder opts))))
 
 (def ^HttpClient default-client
   (delay (HttpClient/newHttpClient)))
@@ -110,8 +110,8 @@
       version                  (.version (version-keyword->version-enum version)))))
 
 (defn build-request
-  ([] (.build (request-builder {})))
-  ([req-map] (.build (request-builder req-map))))
+  (^HttpRequest [] (.build (request-builder {})))
+  (^HttpRequest [req-map] (.build (request-builder req-map))))
 
 (def ^:private bh-of-string (HttpResponse$BodyHandlers/ofString))
 (def ^:private bh-of-input-stream (HttpResponse$BodyHandlers/ofInputStream))
@@ -157,11 +157,11 @@
      (if raw? resp (response->map resp)))))
 
 (defn send-async
-  ([req]
+  (^CompletableFuture [req]
    (send-async req {} nil nil))
-  ([req opts]
+  (^CompletableFuture [req opts]
    (send-async req opts nil nil))
-  ([req {:keys [as client raw?] :as opts} callback ex-handler]
+  (^CompletableFuture [req {:keys [as client raw?] :as opts} callback ex-handler]
    (let [^HttpClient client (or client @default-client)
          req' (convert-request req)]
      (cond-> (.sendAsync client req' (convert-body-handler as))

@@ -17,6 +17,8 @@
            [java.util.function BiPredicate]
            [javax.net.ssl SSLContext SSLParameters]))
 
+(set! *warn-on-reflection* true)
+
 (st/instrument)
 
 (defn build-fake-response [{:keys [status body version headers]}]

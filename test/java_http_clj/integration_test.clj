@@ -10,6 +10,8 @@
            [java.util Arrays]
            [java.util.concurrent CompletableFuture]))
 
+(set! *warn-on-reflection* true)
+
 (st/instrument)
 
 (def port 8787)
@@ -32,7 +34,7 @@
   ([path params]
    (str (assoc (url base-url path) :query params))))
 
-(def s "some boring test string")
+(def ^String s "some boring test string")
 
 (defn all-tests [f]
   (testing "request"
