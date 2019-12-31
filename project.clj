@@ -3,7 +3,7 @@
   :url "http://www.github.com/schmee/java-http-clj"
   :license {:name "MIT"
             :url "https://opensource.org/licenses/MIT"}
-  :dependencies [[org.clojure/clojure "1.10.0-beta5"]]
+  :dependencies [[org.clojure/clojure "1.10.1" :scope "provided"]]
   :profiles {:dev {:dependencies [[com.cemerick/url "0.1.1"]
                                   [compojure "1.6.1"]
                                   [info.sunng/ring-jetty9-adapter "0.12.2"]
