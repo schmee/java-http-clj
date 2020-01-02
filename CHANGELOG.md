@@ -1,3 +1,9 @@
+## 0.4.1
+
+- Add type hints to functions that return Java objects
+- Set Clojure dependency as `:scope "provided"`
+- Small bugfixes for WebSocket and specs
+
 ## 0.4.0
 
 - Add WebSocket API
