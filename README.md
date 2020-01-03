@@ -1,8 +1,8 @@
 # java-http-clj [![CircleCI](https://circleci.com/gh/schmee/java-http-clj.svg?style=svg)](https://circleci.com/gh/schmee/java-http-clj)
 
-Today [clj-http](https://github.com/dakrone/clj-http) is the de-facto standard HTTP client for Clojure. It is an excellent library, but it is also a large dependency since it is based on [Apache HTTP](https://hc.apache.org/httpcomponents-client-ga/). It also doesn't support HTTP/2 (yet).
+[clj-http](https://github.com/dakrone/clj-http) is the de-facto standard HTTP client for Clojure. It is an excellent library, but it is also a large dependency since it is based on [Apache HTTP](https://hc.apache.org/httpcomponents-client-ga/). It also doesn't support HTTP/2 (yet).
 
-Enter java-http-clj. It is inspired by both clj-http and [Ring](https://github.com/ring-clojure/ring/blob/master/SPEC) and built on `java.net.http` that ships with with Java 11. As such it comes with _no_ extra dependencies if you're already using Java 11, and it fully supports HTTP/2 out of the box.
+Enter java-http-clj. It is inspired by both clj-http and [Ring](https://github.com/ring-clojure/ring/blob/master/SPEC) and built on `java.net.http` that ships with with Java 11. As such it comes with _no_ extra dependencies if you're already using Java 11 and it fully supports HTTP/2 out of the box.
 
 ## Installation
 
@@ -61,9 +61,9 @@ To make an async request, use the `send-async` function (currently there is no s
 (http/send-async {:uri "http://www.google.com" :method :get})
 
 ;; Takes an optional callback and exception handler
-(http/send-async {:uri "http://www.google.com" :method :get})
+(http/send-async {:uri "http://www.google.com" :method :get}
                  (fn [r] (do-something-with-response r))
-                 (fn [e] (println "oops, something blew up"))
+                 (fn [e] (println "oops, something blew up")))
 
 ```
 
@@ -131,12 +131,8 @@ There is also `build-websocket-async` and `send-async` that return a `Completabl
 
 If any of this is deal-breaker for you, I recommend clj-http which is a much more fully-featured HTTP client.
 
-## How to contribute
-
-Bug fixes are always welcome, just open a PR! If you want to implement a new feature or make substantial changes to existing ones, please open an issue first and outline your ideas.
-
 ## License
 
-Copyright © 2018-2019 John Schmidt
+Copyright © 2018-2020 John Schmidt
 
 Released under the MIT License: http://www.opensource.org/licenses/mit-license.php
