@@ -73,7 +73,7 @@ All request functions take an `opts` map for customization (refer to [send](http
 
 ```clj
 ;; Provide a custom client
-(def client (build-client {:follow-redirects :always}))
+(def client (http/build-client {:follow-redirects :always}))
 (http/send {:uri "http://www.google.com" :method :get} {:client client})
 
 ;; Skip map conversion and return the java.net.http.HttpResponse object
