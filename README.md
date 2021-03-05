@@ -133,6 +133,6 @@ If any of this is deal-breaker for you, I recommend clj-http which is a much mor
 
 ## License
 
-Copyright © 2018-2020 John Schmidt
+Copyright © 2018-2021 John Schmidt
 
 Released under the MIT License: http://www.opensource.org/licenses/mit-license.php

@@ -275,7 +275,7 @@
                :opts (s/? ::send-opts))
   :ret ::response)
 
-;; Use `fn?` instead of `fspec` for the callbacks due to issues like
+;; Use `ifn?` instead of `fspec` for the callbacks due to issues like
 ;; https://dev.clojure.org/jira/browse/CLJ-1936 and
 ;; https://dev.clojure.org/jira/browse/CLJ-2217
 (s/fdef send-async
@@ -289,11 +289,11 @@
                :req+opts+callbacks
                (s/cat :req ::request
                       :opts ::send-opts
-                      :callback (s/nilable fn?)
+                      :callback (s/nilable ifn?)
                       ; :callback (s/fspec
                       ;             :args (s/cat :response ::response)
                       ;             :ret any?)
-                      :ex-handler (s/nilable fn?)))
+                      :ex-handler (s/nilable ifn?)))
                       ; :ex-handler (s/fspec
                       ;               :args (s/cat :exception #(instance? Throwable %))
                       ;               :ret any?)))

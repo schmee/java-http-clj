@@ -159,13 +159,13 @@
           :last? (s/? boolean?))
   :ret ::websocket)
 
-(s/def ::on-binary fn?)
-(s/def ::on-close fn?)
-(s/def ::on-error fn?)
-(s/def ::on-open fn?)
-(s/def ::on-ping fn?)
-(s/def ::on-pong fn?)
-(s/def ::on-text fn?)
+(s/def ::on-binary ifn?)
+(s/def ::on-close ifn?)
+(s/def ::on-error ifn?)
+(s/def ::on-open ifn?)
+(s/def ::on-ping ifn?)
+(s/def ::on-pong ifn?)
+(s/def ::on-text ifn?)
 
 (s/def ::listener-fns
   (s/keys :opt-un
