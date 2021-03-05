@@ -1,3 +1,7 @@
+## 0.4.2
+
+- Use `ifn?` for callbacks instead of `fn?`
+
 ## 0.4.1
 
 - Add type hints to functions that return Java objects
