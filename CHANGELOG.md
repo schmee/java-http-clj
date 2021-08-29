@@ -1,3 +1,7 @@
+## 0.4.3
+
+- Move specs from `java-http-clj.core` and `java-http-clj.websocket` to `java-http-clj.specs` to make java-http-clj easier to use with [Babashka](https://github.com/babashka/babashka/).
+
 ## 0.4.2
 
 - Use `ifn?` for callbacks instead of `fn?`
