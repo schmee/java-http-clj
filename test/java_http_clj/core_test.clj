@@ -3,7 +3,8 @@
   (:require [clojure.java.io :as io]
             [clojure.test :refer :all]
             [clojure.spec.test.alpha :as st]
-            [java-http-clj.core :refer :all])
+            [java-http-clj.core :refer :all]
+            [java-http-clj.specs])
   (:import [java.net CookieManager ProxySelector URI]
            [java.net.http
             HttpClient$Redirect

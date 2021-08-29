@@ -14,7 +14,7 @@ java-http-clj requires Clojure 1.9+ and Java 11+.
 
 - [API documentation](https://schmee.github.io/java-http-clj/)
 
-- [Specs](https://github.com/schmee/java-http-clj/blob/master/src/java_http_clj/core.clj#L203)
+- [Specs](https://github.com/schmee/java-http-clj/blob/master/src/java_http_clj/specs.clj) (note: as of version `0.4.3` the specs have moved from `java-http-clj.core` and `java-http-clj.websocket` to `java-http-clj.specs` and must be required separately)
 
 - [java.net.http Javadoc](https://docs.oracle.com/en/java/javase/11/docs/api/java.net.http/java/net/http/package-summary.html)
 
