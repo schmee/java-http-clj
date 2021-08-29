@@ -15,3 +15,5 @@
 (defmacro clj-fn->function ^Function [f]
   `(reify Function
     (apply [_# x#] (~f x#))))
+
+(def shorthands [:get :head :post :put :delete])
