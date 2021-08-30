@@ -3,6 +3,7 @@
   (:require [clojure.java.io :as io]
             [clojure.test :refer :all]
             [clojure.spec.test.alpha :as st]
+            [java-http-clj.specs]
             [java-http-clj.test-server]
             [java-http-clj.websocket :refer :all]
             [mount.core :as mount])

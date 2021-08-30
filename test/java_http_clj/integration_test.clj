@@ -5,6 +5,7 @@
             [clojure.test :refer :all]
             [clojure.spec.test.alpha :as st]
             [java-http-clj.core :refer :all]
+            [java-http-clj.specs]
             [mount.core :as mount])
   (:import [java.net.http HttpResponse]
            [java.util Arrays]

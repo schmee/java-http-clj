@@ -1,7 +1,6 @@
 (ns java-http-clj.websocket
   (:refer-clojure :exclude [send])
-  (:require [clojure.spec.alpha :as s]
-            [java-http-clj.core :as core]
+  (:require [java-http-clj.core :as core]
             [java-http-clj.util :as util :refer [add-docstring]])
   (:import [java.net URI]
            [java.net.http
@@ -138,85 +137,6 @@
  (^CompletableFuture [^WebSocket ws] (.sendClose ws WebSocket/NORMAL_CLOSURE ""))
  (^CompletableFuture [^WebSocket ws status-code] (.sendClose ws status-code ""))
  (^CompletableFuture [^WebSocket ws status-code reason] (.sendClose ws status-code reason)))
-
-
-;; ==============================  SPECS  ==============================
-
-
-(s/def ::websocket
-  #(instance? WebSocket %))
-
-(s/def ::payload
-  (s/or :string string?
-        :byte-array bytes?
-        :byte-buffer #(instance? ByteBuffer %)
-        :other any?))
-
-(s/fdef send
-  :args (s/cat
-          :websocket ::websocket
-          :payload ::payload
-          :last? (s/? boolean?))
-  :ret ::websocket)
-
-(s/def ::on-binary ifn?)
-(s/def ::on-close ifn?)
-(s/def ::on-error ifn?)
-(s/def ::on-open ifn?)
-(s/def ::on-ping ifn?)
-(s/def ::on-pong ifn?)
-(s/def ::on-text ifn?)
-
-(s/def ::listener-fns
-  (s/keys :opt-un
-          [::on-binary
-           ::on-close
-           ::on-error
-           ::on-open
-           ::on-ping
-           ::on-pong
-           ::on-text]))
-
-(s/fdef websocket-listener
-  :args (s/cat :listener-fns ::listener-fns)
-  :ret #(instance? WebSocket$Listener %))
-
-(s/def ::subprotocols
-  (s/+ string?))
-
-(s/def ::builder-opts
-  (s/keys
-    :opt-un [::core/client
-             ::core/connect-timeout
-             ::core/headers
-             ::subprotocols]))
-
-(s/fdef websocket-builder
-  :args (s/cat :opts (s/? ::builder-opts))
-  :ret #(instance? WebSocket$Builder %))
-
-(s/fdef build-websocket
-  :args (s/cat :uri ::core/uri
-               :listener-fns ::listener-fns
-               :builder-opts (s/? ::builder-opts))
-  :ret ::websocket)
-
-(s/def ::status-code
-  (s/int-in 1000 5000))
-
-(s/def ::reason string?)
-
-(s/def ::completable-future
-  #(instance? CompletableFuture %))
-
-(s/fdef close
-  :args (s/alt :default (s/cat :websocket ::websocket)
-               :status-code (s/cat :websocket ::websocket
-                                   :status-code ::status-code)
-               :status-code+reason (s/cat :websocket ::websocket
-                                          :status-code ::status-code
-                                          :reason ::reason))
-  :ret ::completable-future)
 
 
 ;; ==============================  DOCSTRINGS  ==============================
