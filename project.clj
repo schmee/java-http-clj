@@ -13,12 +13,8 @@
                                   [ring "1.9.4"]
                                   [ring/ring-defaults "0.3.3"]]
                    :source-paths ["src" "env/dev/clj" "test"]
-                   :plugins [[lein-codox "0.10.5"]]
                    :injections [(require 'pjstadig.humane-test-output)
-                                (pjstadig.humane-test-output/activate!)]
-                   :codox {:metadata {:doc/format :markdown}
-                           :output-path "codox"
-                           :source-paths ["src"]}}
+                                (pjstadig.humane-test-output/activate!)]}
              :kaocha {:dependencies [[lambdaisland/kaocha "1.0.861"]]}}
   :repl-options {:init-ns java-http-clj.core}
   :aliases {"kaocha" ["with-profile" "+kaocha" "run" "-m" "kaocha.runner"]})
