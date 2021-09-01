@@ -3,15 +3,15 @@
   :url "http://www.github.com/schmee/java-http-clj"
   :license {:name "MIT"
             :url "https://opensource.org/licenses/MIT"}
-  :dependencies [[org.clojure/clojure "1.10.1" :scope "provided"]]
+  :dependencies [[org.clojure/clojure "1.10.3" :scope "provided"]]
   :profiles {:dev {:dependencies [[com.cemerick/url "0.1.1"]
-                                  [compojure "1.6.1"]
-                                  [info.sunng/ring-jetty9-adapter "0.12.2"]
-                                  [mount "0.1.14"]
-                                  [org.clojure/tools.namespace "0.2.11"]
-                                  [pjstadig/humane-test-output "0.8.3"]
-                                  [ring "1.7.1"]
-                                  [ring/ring-defaults "0.3.2"]]
+                                  [compojure "1.6.2"]
+                                  [info.sunng/ring-jetty9-adapter "0.14.2"]
+                                  [mount "0.1.16"]
+                                  [org.clojure/tools.namespace "1.1.0"]
+                                  [pjstadig/humane-test-output "0.11.0"]
+                                  [ring "1.9.4"]
+                                  [ring/ring-defaults "0.3.3"]]
                    :source-paths ["src" "env/dev/clj" "test"]
                    :plugins [[lein-codox "0.10.5"]]
                    :injections [(require 'pjstadig.humane-test-output)
@@ -19,6 +19,6 @@
                    :codox {:metadata {:doc/format :markdown}
                            :output-path "codox"
                            :source-paths ["src"]}}
-             :kaocha {:dependencies [[lambdaisland/kaocha "0.0-529"]]}}
+             :kaocha {:dependencies [[lambdaisland/kaocha "1.0.861"]]}}
   :repl-options {:init-ns java-http-clj.core}
   :aliases {"kaocha" ["with-profile" "+kaocha" "run" "-m" "kaocha.runner"]})
