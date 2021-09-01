@@ -1,4 +1,4 @@
-# java-http-clj [![CircleCI](https://circleci.com/gh/schmee/java-http-clj.svg?style=svg)](https://circleci.com/gh/schmee/java-http-clj)
+# java-http-clj [![CircleCI](https://circleci.com/gh/schmee/java-http-clj.svg?style=svg)](https://circleci.com/gh/schmee/java-http-clj)[![cljdoc badge](https://cljdoc.org/badge/java-http-clj/java-http-clj)](https://cljdoc.org/d/java-http-clj/java-http-clj/CURRENT)
 
 [clj-http](https://github.com/dakrone/clj-http) is the de-facto standard HTTP client for Clojure. It is an excellent library, but it is also a large dependency since it is based on [Apache HTTP](https://hc.apache.org/httpcomponents-client-ga/). It also doesn't support HTTP/2 (yet).
 
@@ -12,7 +12,7 @@ java-http-clj requires Clojure 1.9+ and Java 11+.
 
 ## Documentation
 
-- [API documentation](https://schmee.github.io/java-http-clj/)
+- [API documentation](https://cljdoc.org/d/java-http-clj/java-http-clj/CURRENT/api/java-http-clj.core)
 
 - [Specs](https://github.com/schmee/java-http-clj/blob/master/src/java_http_clj/specs.clj) (note: as of version `0.4.3` the specs have moved from `java-http-clj.core` and `java-http-clj.websocket` to `java-http-clj.specs` and must be required separately)
 
