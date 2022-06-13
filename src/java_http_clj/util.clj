@@ -16,4 +16,4 @@
   `(reify Function
     (~'apply [_# x#] (~f x#))))
 
-(def shorthands [:get :head :post :put :delete])
+(def shorthands [:get :head :post :put :delete :connect :options :trace :patch])
