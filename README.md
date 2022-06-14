@@ -26,7 +26,7 @@ First, require the library:
 (:require [java-http-clj.core :as http])
 ```
 
-The most common HTTP methods (GET, POST, PUT, HEAD, DELETE) have a function of the same name. This function takes three arguments (where the last two are optional): a URL, a request and an options map (refer to [send](https://schmee.github.io/java-http-clj/java-http-clj.core.html#var-send) docs for details).
+The most common HTTP methods (GET, POST, PUT, HEAD, DELETE) have a function of the same name. This function takes three arguments (where the last two are optional): a URL, a request and an options map (refer to [send](https://cljdoc.org/d/java-http-clj/java-http-clj/0.4.3/api/java-http-clj.core#send) docs for details).
 
 - GET requests
 
@@ -69,7 +69,7 @@ To make an async request, use the `send-async` function (currently there is no s
 
 - Options
 
-All request functions take an `opts` map for customization (refer to [send](https://schmee.github.io/java-http-clj/java-http-clj.core.html#var-send) docs for details).
+All request functions take an `opts` map for customization (refer to [send](https://cljdoc.org/d/java-http-clj/java-http-clj/0.4.3/api/java-http-clj.core#send) docs for details).
 
 ```clj
 ;; Provide a custom client
